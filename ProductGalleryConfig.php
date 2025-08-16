@@ -21,4 +21,7 @@ define('PG_UTIL_URL', PG_ROOT_DIR_URL . 'Util');
 /* Global Database Details */
 global $wpdb;
 define('PG_PLUGIN_PREFIX', 'PG');
-define('PG_DB_PREFIX', 'PG');
+define('PG_DB_PREFIX', 'pg_');
+
+/* Tables */
+define('PG_TABLE_IMAGES', PG_DB_PREFIX . 'images');

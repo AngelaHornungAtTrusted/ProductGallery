@@ -10,9 +10,13 @@
  */
 
 //load classes & configs
+//load classes & configs
 require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ProductGalleryConfig.php');
-require_once(PG_ROOT_DIR_PATH . '/vendor/autoload.php');
-require_once(PG_UTIL_DIR_PATH . '/pg-ajax.php');
+require_once(PG_ROOT_DIR_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
+require_once(PG_UTIL_DIR_PATH . DIRECTORY_SEPARATOR . 'pg-ajax.php');
+require_once(PG_UTIL_DIR_PATH . DIRECTORY_SEPARATOR . 'pg-ajax-shortcode.php');
+
+use Util\PgDbTableManager;
 
 /* Plugin Activation & Installation Management Hooks */
 register_activation_hook(__FILE__, 'pg_activate');
@@ -20,26 +24,57 @@ register_activation_hook(__FILE__, 'pg_activate');
 /* Actions */
 add_action('admin_menu', 'pg_admin_menu');
 
-function pg_activate() : void {
+/* Administrative Actions */
+add_action('wp_ajax_pg_image', 'wp_ajax_pg_image');
 
+/* Shortcode Actions */
+add_action('wp_ajax_nopriv_pg_shortcode_image', 'wp_ajax_pg_shortcode_image');
+
+function pg_activate(): void
+{
+    global $wpdb;
+
+    $dbTableManager = new Util\PgDbTableManager($wpdb);
+    $dbTableManager->initTables();
 }
 
-function pg_admin_menu() : void {
+function pg_admin_menu(): void
+{
     add_menu_page(
-        'Product Gallery Management',
-        'Product Gallery',
-        'manage_options',
-        'pg-admin',
-        'pg_admin_page_content'
+            'Product Gallery Management',
+            'Product Gallery',
+            'manage_options',
+            'pg-admin',
+            'pg_admin_page_content'
     );
 }
 
-function pg_admin_page_content() : void {
+function pg_admin_page_content(): void
+{
     ?>
     <div class="wrap">
         <?php wp_enqueue_style('bootstrap-css', PG_ASSETS_URL . '/bootstrap/css/bootstrap.css'); ?>
         <?php wp_enqueue_script('bootstrap-js', PG_ASSETS_URL . '/bootstrap/js/bootstrap.js'); ?>
+        <?php wp_enqueue_script('admin-js', PG_ADMIN_URL . DIRECTORY_SEPARATOR . 'admin.js', array('jquery')); ?>
         <?php include(PG_ADMIN_DIR_PATH . DIRECTORY_SEPARATOR . 'admin.php'); ?>
     </div>
-<?php
+    <?php
+}
+
+/* Shortcode */
+add_shortcode('pgallery', 'pg_shortcode');
+
+function pg_shortcode($atts = [], $content = null): void
+{
+    //todo fix so not needed in two places
+    wp_enqueue_style('bootstrap-css', PP_ASSETS_URL . '/bootstrap/css/bootstrap.css"');
+    wp_enqueue_script('bootstrap-js', PP_ASSETS_URL . '/bootstrap/js/bootstrap.js"');
+    wp_enqueue_script('toastr', plugin_dir_url(__FILE__) . 'Assets/toastr/toastr.js', array('jquery'));
+    wp_enqueue_style('toastr', plugin_dir_url(__FILE__) . 'Assets/toastr/build/toastr.css');
+    ?>
+    <div class="wrap">
+        <?php include(plugin_dir_path(__FILE__) . 'Shortcode/shortcode.php'); ?>
+        <?php wp_enqueue_script('admin-js', PG_SHORTCODE_URL . '/shortcode.js"', array('jquery')); ?>
+    </div>
+    <?php
 }
