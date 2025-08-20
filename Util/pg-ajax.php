@@ -12,9 +12,9 @@ function wp_ajax_pg_image() {
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (!isset($_POST['data']['imageId'])) {
+        if (!isset($_POST['data']['postId'])) {
             //actually posting an image
-            if (!isset($_POST['data']['title']) || !isset($_POST['data']['path']) || !isset($_POST['data']['thumbnail'])){
+            if (!isset($_POST['data']['title']) || !isset($_POST['data']['path']) || !isset($_POST['data']['description'])){
                 $response->status = 'error';
                 $response->message = 'Missing Required Parameters';
                 $response->code = 400;
@@ -27,8 +27,9 @@ function wp_ajax_pg_image() {
                     PG_TABLE_IMAGES,
                     array(
                         'title' => sanitize_text_field($_POST['data']['title']),
+                        'alt' => sanitize_text_field($_POST['data']['alt']),
                         'path' => sanitize_text_field($_POST['data']['path']),
-                        'thumbnail' => sanitize_text_field($_POST['data']['thumbnail']),
+                        'description' => sanitize_text_field($_POST['data']['description']),
                         'create_date' => date('Y-m-d H:i:s'),
                         'update_date' => gmdate('Y-m-d H:i:s'),
                     )
@@ -48,7 +49,7 @@ function wp_ajax_pg_image() {
                 if (!isset($_POST['data']['description'])) {
                     $wpdb->delete(
                         PG_TABLE_IMAGES,
-                        array('id' => intval($_POST['data']['imageId']))
+                        array('id' => intval($_POST['data']['postId']))
                     );
                 } else {
                     $wpdb->update(
@@ -56,7 +57,7 @@ function wp_ajax_pg_image() {
                         array(
                             'description' => sanitize_text_field($_POST['data']['description']),
                         ),
-                        array('id' => intval($_POST['data']['imageId']))
+                        array('id' => intval($_POST['data']['postId']))
                     );
 
                     $response->message = 'Image Updated Successfully';

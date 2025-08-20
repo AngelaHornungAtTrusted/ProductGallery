@@ -1,8 +1,6 @@
 (function($) {
     let $imageTable;
     const pageInit = function() {
-        console.log('pageInit');
-
         $imageTable = $('#imageTable');
 
         grabImages();
@@ -22,14 +20,13 @@
 
     const buildTable = function(data) {
         $.each(data, function(key, image) {
-            $imageTable.append('<div class="col-md-3" style="border-right: 1px; border-color: black; border-style: solid;">' +
-                '<a class="image-download" id="image-download-' + image.id + '" href="' + image.path + '" download>' +
-                '<img class="center" src="' + image.path + '" style="min-width: 100%; max-height: 200px">' +
-                '</a></br>' +
-                '<div class="container" style="max-width: 100%; text-align: center;">' +
-                '<a class="h6 image-download" id="title-download-' + image.id + '" href="' + image.path + '" download>' + image.title + '</a>' +
-                '</div>' +
-                '</div>')
+            console.log(image);
+            $imageTable.append('<div class="imageContainer col-md-2">' +
+                '<img src="' + image.path + '" class="image" alt="' + image.alt + '">' +
+                '<div class="middle">' +
+                '<div class="text">' + image.description + '</div> ' +
+                '</div> ' +
+                '</div>');
         });
     }
 

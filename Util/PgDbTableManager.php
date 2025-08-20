@@ -15,8 +15,8 @@ class PgDbTableManager
         $itemTables = "CREATE TABLE " . PG_TABLE_IMAGES . " (
         id mediumint(9) NOT NULL AUTO_INCREMENT,
         title varchar(255) DEFAULT '' NOT NULL,
+        alt varchar(255) DEFAULT '' NOT NULL,
         path varchar(255) DEFAULT '' NOT NULL,
-        thumbnail varchar(255) DEFAULT '' NOT NULL,
         description varchar(255) DEFAULT '' NOT NULL,
         create_date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
         update_date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,

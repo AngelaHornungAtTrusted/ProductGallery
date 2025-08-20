@@ -18,7 +18,6 @@
         <thead>
             <tr>
                 <th>Thumbnail</th>
-                <th>Image Title</th>
                 <th>Details</th>
                 <th>Actions</th>
             </tr>

@@ -1,5 +1,6 @@
 (function($) {
     let $uploadButton, $imageTable;
+    let width;
 
     const pageInit = function() {
         $uploadButton = $('#imageUpload');
@@ -15,6 +16,7 @@
             action: 'pg_image',
         }, function(response){
             if (response.status === 'success') {
+                width = Math.max(document.documentElement.clientWidth, window.innerWidth);
                 imageTableInit(response.data);
             } else {
                 toastr.error(response.message);
@@ -23,11 +25,12 @@
     }
 
     const imageTableInit = function(data){
+        //determine screen configuration
+
         $.each(data, function(key, image){
             $imageTable.append('<tr>' +
-                '<td><image src="' + image.path + '" style="max-height: 100px;"></image></td>' +
-                '<td>' + image.title + '</td>' +
-                '<td><input class="imageDescription" type="text" id="description-' + image.id + '" value="' + image.description + '"></td>' +
+                '<td><image src="' + image.path + '" style="max-height: ' + ((width < 500) ? 100 : 200) + 'px;"></image></td>' +
+                '<td><input class="imageDescription" style="' + ((width < 500) ? 'max-width: 150px;' : 'min-width: 100%;') + '" type="text" id="description-' + image.id + '" value="' + image.description + '"></td>' +
                 '<td><a class="btn btn-secondary" href="' + image.path + '" download><i class="fa fa-download"></i></a>' +
                 '<a class="btn btn-danger" id="delete-' + image.id + '"><i class="fa fa-trash"></i></a></td>' +
                 '</tr>');
@@ -37,7 +40,7 @@
             $.post(PG_AJAX_URL, {
                 action: 'pg_image',
                 data: {
-                    'imageId': e.currentTarget.id.split('-')[1]
+                    'postId': e.currentTarget.id.split('-')[1]
                 }
             }, function(response){
                 if (response.status === 'success') {
@@ -52,7 +55,7 @@
             $.post(PG_AJAX_URL, {
                 action: 'pg_image',
                 data: {
-                    'imageId': e.currentTarget.id.split('-')[1],
+                    'postId': e.currentTarget.id.split('-')[1],
                     'description': e.target.value
                 }
             }, function(response){
@@ -78,12 +81,14 @@
             var selections = uploader.state().get('selection').toJSON();
 
             $.each(selections, function(key, selection){
+                console.log(selection.description);
                 $.post(PG_AJAX_URL, {
                     action: 'pg_image',
                     data: {
                         title: selection.title,
+                        alt: selection.alt,
                         path: selection.url,
-                        thumbnail: selection.icon
+                        description: selection.description,
                     }
                 }, function(response){
                     if (response.status === 'success') {
