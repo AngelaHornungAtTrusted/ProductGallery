@@ -26,6 +26,8 @@ function wp_ajax_pg_image() {
                 $wpdb->insert(
                     PG_TABLE_IMAGES,
                     array(
+                        'featured' => 0,
+                        'orderNumber' => intval($_POST['data']['orderNumber']),
                         'title' => sanitize_text_field($_POST['data']['title']),
                         'alt' => sanitize_text_field($_POST['data']['alt']),
                         'path' => sanitize_text_field($_POST['data']['path']),
@@ -43,26 +45,28 @@ function wp_ajax_pg_image() {
                 $response->code = 500;
             }
         } else {
-            //if set, we're deleting or updating an image
+            //if any field other than id is set than were updating an image
             try {
+                if (isset($_POST['data']['description']) || isset($_POST['data']['orderNumber']) || isset($_POST['data']['featured'])) {
+                    //determine what were updating and generate data
+                    $details = (isset($_POST['data']['description'])) ? 'description' : ((isset($_POST['data']['orderNumber'])) ? 'orderNumber' : 'featured');
+                    $data = (isset($_POST['data']['description'])) ? sanitize_text_field($_POST['data']['description']) : ((isset($_POST['data']['orderNumber'])) ? intval($_POST['data']['orderNumber']) : intval($_POST['data']['featured']));
 
-                if (!isset($_POST['data']['description'])) {
+                    $wpdb->update(
+                        PG_TABLE_IMAGES,
+                        array(
+                            $details => $data
+                        ),
+                        array('id' => intval($_POST['data']['postId']))
+                    );
+                } else {
                     $wpdb->delete(
                         PG_TABLE_IMAGES,
                         array('id' => intval($_POST['data']['postId']))
                     );
-                } else {
-                    $wpdb->update(
-                        PG_TABLE_IMAGES,
-                        array(
-                            'description' => sanitize_text_field($_POST['data']['description']),
-                        ),
-                        array('id' => intval($_POST['data']['postId']))
-                    );
-
-                    $response->message = 'Image Updated Successfully';
                 }
 
+                $response->message = 'Image Updated Successfully';
                 $response->status = 'success';
                 $response->code = 200;
             } catch (Exception $e) {
@@ -75,7 +79,7 @@ function wp_ajax_pg_image() {
         if (!isset($_GET['data']['imageId'])) {
             //grab all
             try {
-                $data = $wpdb->get_results("SELECT * FROM " . PG_TABLE_IMAGES);
+                $data = $wpdb->get_results("SELECT * FROM " . PG_TABLE_IMAGES . " ORDER BY id DESC");
             } catch (Exception $e) {
                 $response->status = 'error';
                 $response->message = $e->getMessage();

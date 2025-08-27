@@ -14,6 +14,8 @@ class PgDbTableManager
 
         $itemTables = "CREATE TABLE " . PG_TABLE_IMAGES . " (
         id mediumint(9) NOT NULL AUTO_INCREMENT,
+        featured tinyint(1) NOT NULL DEFAULT '0',
+        orderNumber mediumint(9) NOT NULL,
         title varchar(255) DEFAULT '' NOT NULL,
         alt varchar(255) DEFAULT '' NOT NULL,
         path varchar(255) DEFAULT '' NOT NULL,

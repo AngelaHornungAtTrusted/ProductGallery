@@ -3,6 +3,7 @@
 ?>
 <script>
     PG_AJAX_URL = '<?php echo esc_url(admin_url('admin-ajax.php', 'relative')); ?>';
+    FEATURED = '<?php echo $featured; ?>';
 </script>
 <style>
     .image {
@@ -25,6 +26,7 @@
 
     .imageContainer:hover .image {
         opacity: 0.3;
+        padding-left: 10%;
     }
 
     .imageContainer:hover .middle {
@@ -40,6 +42,6 @@
     }
 </style>
 <h3>Featured Items</h3>
-<div class="row container" id="imageTable" style="align-content: center;">
+<div class="row" id="imageTable" style="align-content: center;">
 
 </div>

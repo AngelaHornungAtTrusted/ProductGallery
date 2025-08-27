@@ -29,8 +29,8 @@ add_action('admin_menu', 'pg_admin_menu');
 add_action('wp_ajax_pg_image', 'wp_ajax_pg_image');
 
 /* Shortcode Actions */
-add_action('wp_ajax_nopriv_pg_shortcode_image', 'wp_ajax_pg_shortcode_image');
 add_action('wp_ajax_pg_shortcode_image', 'wp_ajax_pg_shortcode_image');
+add_action('wp_ajax_nopriv_pg_shortcode_image', 'wp_ajax_pg_shortcode_image');
 
 function pg_activate(): void
 {
@@ -61,6 +61,8 @@ function pg_admin_page_content(): void
     <div class="wrap">
         <?php wp_enqueue_style('bootstrap-css', PG_ASSETS_URL . '/bootstrap/css/bootstrap.css'); ?>
         <?php wp_enqueue_script('bootstrap-js', PG_ASSETS_URL . '/bootstrap/js/bootstrap.js'); ?>
+        <?php wp_enqueue_style('toastr', plugin_dir_url(__FILE__) . 'Assets/toastr/build/toastr.css'); ?>
+        <?php wp_enqueue_script('toastr', plugin_dir_url(__FILE__) . 'Assets/toastr/toastr.js', array('jquery')); ?>
         <?php wp_enqueue_script('admin-js', PG_ADMIN_URL . DIRECTORY_SEPARATOR . 'admin.js', array('jquery')); ?>
         <?php include(PG_ADMIN_DIR_PATH . DIRECTORY_SEPARATOR . 'admin.php'); ?>
     </div>
@@ -72,14 +74,26 @@ add_shortcode('pgallery', 'pg_shortcode');
 
 function pg_shortcode($atts = [], $content = null): void
 {
-    ?>
-    <div class="wrap">
-        <?php wp_enqueue_style('bootstrap-css', PG_ASSETS_URL . '/bootstrap/css/bootstrap.css'); ?>
-        <?php wp_enqueue_script('bootstrap-js', PG_ASSETS_URL . '/bootstrap/js/bootstrap.js'); ?>
-        <?php wp_enqueue_style('toastr', plugin_dir_url(__FILE__) . 'Assets/toastr/build/toastr.css'); ?>
-        <?php wp_enqueue_script('toastr', plugin_dir_url(__FILE__) . 'Assets/toastr/toastr.js', array('jquery')); ?>
-        <?php include(plugin_dir_path(__FILE__) . 'Shortcode/shortcode.php'); ?>
-        <?php wp_enqueue_script('admin-js', PG_SHORTCODE_URL . '/shortcode.js"', array('jquery')); ?>
-    </div>
-    <?php
+    if (sizeOf($atts) > 0) {
+        $featured = intval($atts[0]);
+        ?>
+        <div class="wrap">
+            <?php wp_enqueue_style('bootstrap-css', PG_ASSETS_URL . '/bootstrap/css/bootstrap.css'); ?>
+            <?php wp_enqueue_script('bootstrap-js', PG_ASSETS_URL . '/bootstrap/js/bootstrap.js'); ?>
+            <?php wp_enqueue_style('toastr', plugin_dir_url(__FILE__) . 'Assets/toastr/build/toastr.css'); ?>
+            <?php wp_enqueue_script('toastr', plugin_dir_url(__FILE__) . 'Assets/toastr/toastr.js', array('jquery')); ?>
+            <?php wp_enqueue_script('popup', plugin_dir_url(__FILE__) . 'Assets/popup/popup.js', array('jquery')); ?>
+            <?php include(plugin_dir_path(__FILE__) . 'Shortcode/shortcode.php'); ?>
+            <?php wp_enqueue_script('admin-js', PG_SHORTCODE_URL . '/shortcode.js"', array('jquery')); ?>
+        </div>
+        <?php
+    } else {
+        ?>
+        <div class="wrap">
+            <h2>Warning</h2>
+            <p>An attribute of a 1 or zero is required in the shortcode. A 1 indicates that only featured images should appear, a 0 that only  non-featured images should appear.</p>
+        </div>
+        <?php
+    }
+
 }
