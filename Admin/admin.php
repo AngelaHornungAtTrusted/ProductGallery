@@ -4,6 +4,19 @@
 <script>
     PG_AJAX_URL = '<?php echo esc_url(admin_url('admin-ajax.php', 'relative')); ?>';
 </script>
+<style>
+    /* (PART A) ENTIRE TABLE */
+    #demo { border-collapse: collapse; }
+    #demo tr:nth-child(odd) { background: #f2f2f2; }
+    #demo td, #demo th {
+        text-align: left; padding: 10px;
+        border: 1px solid #ccc;
+    }
+    #demo th { color: #fff; background: #51759a; }
+
+    /* (PART B) ON DRAG HOVER */
+    #demo tr.hover { background: #eff70d; }
+</style>
 <h2>Admin Page</h2>
 <div class="row">
     <div class="col-md-3">
@@ -20,8 +33,8 @@
         <a class="btn btn-secondary" href="mailto:helpdesk@trustedtechsupport.com?subject=Product Gallery Support"><i class="fa fa-envelope"></i> Email Support</a>
     </div>
 </div>
-<div class="row">
-    <table class="table table-striped" style="padding-right: 15px;">
+<div class="row" style="margin-top: 10px;">
+    <table class="table table-striped draggable-table" style="padding-right: 15px;" id="demo">
         <thead id="imageTableHead">
 
         </thead>

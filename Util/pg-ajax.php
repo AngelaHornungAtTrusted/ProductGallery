@@ -79,7 +79,7 @@ function wp_ajax_pg_image() {
         if (!isset($_GET['data']['imageId'])) {
             //grab all
             try {
-                $data = $wpdb->get_results("SELECT * FROM " . PG_TABLE_IMAGES . " ORDER BY id DESC");
+                $data = $wpdb->get_results("SELECT * FROM " . PG_TABLE_IMAGES . " ORDER BY orderNumber ASC");
             } catch (Exception $e) {
                 $response->status = 'error';
                 $response->message = $e->getMessage();

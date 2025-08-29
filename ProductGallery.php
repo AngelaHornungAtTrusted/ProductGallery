@@ -74,26 +74,13 @@ add_shortcode('pgallery', 'pg_shortcode');
 
 function pg_shortcode($atts = [], $content = null): void
 {
-    if (sizeOf($atts) > 0) {
-        $featured = intval($atts[0]);
-        ?>
+    ?>
         <div class="wrap">
             <?php wp_enqueue_style('bootstrap-css', PG_ASSETS_URL . '/bootstrap/css/bootstrap.css'); ?>
             <?php wp_enqueue_script('bootstrap-js', PG_ASSETS_URL . '/bootstrap/js/bootstrap.js'); ?>
-            <?php wp_enqueue_style('toastr', plugin_dir_url(__FILE__) . 'Assets/toastr/build/toastr.css'); ?>
-            <?php wp_enqueue_script('toastr', plugin_dir_url(__FILE__) . 'Assets/toastr/toastr.js', array('jquery')); ?>
             <?php wp_enqueue_script('popup', plugin_dir_url(__FILE__) . 'Assets/popup/popup.js', array('jquery')); ?>
             <?php include(plugin_dir_path(__FILE__) . 'Shortcode/shortcode.php'); ?>
             <?php wp_enqueue_script('admin-js', PG_SHORTCODE_URL . '/shortcode.js"', array('jquery')); ?>
         </div>
         <?php
-    } else {
-        ?>
-        <div class="wrap">
-            <h2>Warning</h2>
-            <p>An attribute of a 1 or zero is required in the shortcode. A 1 indicates that only featured images should appear, a 0 that only  non-featured images should appear.</p>
-        </div>
-        <?php
-    }
-
 }

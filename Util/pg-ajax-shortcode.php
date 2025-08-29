@@ -4,9 +4,9 @@ function wp_ajax_pg_shortcode_image() : void {
     $response = new stdClass();
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        $featured = (intval($_GET['data']['featured']) === 1) ? " WHERE featured = 1" : " WHERE featured = 0";
+        //$featured = (intval($_GET['data']['featured']) === 1) ? " WHERE featured = 1" : " WHERE featured = 0";
 
-        $data = $wpdb->get_results("SELECT * FROM " . PG_TABLE_IMAGES . $featured ." ORDER BY orderNumber ASC");
+        $data = $wpdb->get_results("SELECT * FROM " . PG_TABLE_IMAGES . /*$featured .*/ " ORDER BY orderNumber ASC");
 
         $response->status = 'success';
         $response->data = $data;

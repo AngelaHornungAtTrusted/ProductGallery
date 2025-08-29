@@ -8,7 +8,7 @@
         $imageTable = $('#imageTable');
 
         getImages();
-        $uploadButton.on('click', openMediaUuploader);
+        $uploadButton.on('click', openMediaUploader);
     }
 
     const getImages = function() {
@@ -27,49 +27,23 @@
     const imageTableInit = function(data){
         mobile = window.mobileCheck();
 
-        if (mobile !== true) {
-            $imageTableHead.append('<tr>' +
-                '<th>Thumbnail</th>' +
-                '<th>Details</th>' +
-                '<th>Actions</th>' +
+        $imageTableHead.append('<tr>' +
+            '<th>Thumbnail</th>' +
+            '<th>Details</th>' +
+            '<th ' + ((mobile !== true) ? '':'hidden') + '>Actions</th>' +
+            '</tr>');
+
+        $.each(data, function(key, image){
+            $imageTable.append('<tr>' +
+                '<td id="row-' + image.id + '"><image src="' + image.path + '" style="max-height: ' + ((width < 500) ? 100 : 200) + 'px;"></image></td>' +
+                '<td><input class="imageDescription" type="text" id="description-' + image.id + '" value="' + image.description + '"></td>' +
+                ((mobile !== true) ? '' : '</tr><tr>') +
+                '<td><a class="btn btn-secondary" href="' + image.path + '" download style="margin-right: 15px;"><i class="fa fa-download"></i></a>' +
+                '<a class="btn btn-danger" id="delete-' + image.id + '" style="margin-right: 15px;"><i class="fa fa-trash"></i></a>' +
+                ((mobile !== true) ? '' : '</td><td>') +
+                '<input class="imageFeatured" type="checkbox" id="featured-' + image.id + '" style="margin-right: 15px;" ' + ((image.featured === '1') ? 'checked' : '') + '><label for="featured-' + image.id + '">Featured</label></td>' +
                 '</tr>');
-
-            $.each(data, function(key, image){
-                $imageTable.append('<tr>' +
-                    '<td><image src="' + image.path + '" style="max-height: ' + ((width < 500) ? 100 : 200) + 'px;"></image></td>' +
-                    '<td><input class="imageDescription" style="' + ((width < 500) ? 'max-width: 150px;' : 'min-width: 100%;') + '" type="text" id="description-' + image.id + '" value="' + image.description + '"></td>' +
-                    '<td><a class="btn btn-secondary" href="' + image.path + '" download style="margin-right: 5px;"><i class="fa fa-download"></i></a>' +
-                    '<a class="btn btn-danger" id="delete-' + image.id + '" style="margin-right: 5px;"><i class="fa fa-trash"></i></a>' +
-                    '<select id="imageOrder-' + image.id + '" class="imageOrder" style="margin-right: 5px;"></select>' +
-                    '<input class="imageFeatured" type="checkbox" id="featured-' + image.id + '" style="margin-right: 5px;" ' + ((image.featured === '1') ? 'checked' : '') + '><label for="featured-' + image.id + '">Featured</label></td>' +
-                    '</tr>');
-
-                options[key + 1] = '<option id="orderOption-' + image.id + '" value="' + (key + 1) + '">' + (key + 1) + '</option>';
-            });
-        } else {
-            $imageTableHead.append('<tr>' +
-                '<th>Thumbnail</th>' +
-                '<th>Details</th>' +
-                '</tr>');
-
-            $.each(data, function(key, image){
-                $imageTable.append('<tr>' +
-                    '<td><image src="' + image.path + '" style="max-height: ' + ((width < 500) ? 100 : 200) + 'px;"></image></td>' +
-                    '<td><input class="imageDescription" type="text" id="description-' + image.id + '" value="' + image.description + '"></td>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '<td><input class="imageFeatured" type="checkbox" id="featured-' + image.id + '" style="margin-right: 15px;" ' + ((image.featured === '1') ? 'checked' : '') + '><label for="featured-' + image.id + '">Featured</label></td>' +
-                    '<td><a class="btn btn-secondary" href="' + image.path + '" download style="margin-right: 15px;"><i class="fa fa-download"></i></a>' +
-                    '<a class="btn btn-danger" id="delete-' + image.id + '" style="margin-right: 15px;"><i class="fa fa-trash"></i></a>' +
-                    '<select id="imageOrder-' + image.id + '" class="imageOrder" style="margin-right: 15px;"></select></td>' +
-                    '</tr>');
-
-
-                options[key + 1] = '<option id="orderOption-' + image.id + '" value="' + (key + 1) + '">' + (key + 1) + '</option>';
-            });
-        }
-
-        $('.imageOrder').append(options);
+        });
 
         $.each(data, function(key, image){
            $('#imageOrder-' + image.id).val(image.orderNumber);
@@ -79,22 +53,6 @@
     }
 
     const setActions = function () {
-        $('.imageOrder').on('change', function(e){
-            $.post(PG_AJAX_URL, {
-                action: 'pg_image',
-                data: {
-                    postId: e.currentTarget.id.split('-')[1],
-                    orderNumber: e.currentTarget.value
-                }
-            }, function(response){
-                if (response.status === 'success') {
-                    toastr.success(response.message);
-                } else {
-                    toastr.error(response.message);
-                }
-            })
-        });
-
         $('.btn-danger').on('click', function(e) {
             $.post(PG_AJAX_URL, {
                 action: 'pg_image',
@@ -127,7 +85,6 @@
         });
 
         $('.imageFeatured').on('click', function(e) {
-            console.log(((e.currentTarget.checked === true) ? 1 : 0));
             $.post(PG_AJAX_URL, {
                 action: 'pg_image',
                 data: {
@@ -142,12 +99,63 @@
                 }
             })
         });
+
+        dragTable();
     }
 
-    const openMediaUuploader = function () {
-        'use strict';
-        console.log(options.length);
+    const dragTable = function() {
+        var all = document.querySelectorAll("#demo tr");
 
+        var dragged;
+
+        for (let tr of all) {
+            tr.draggable = true;
+
+            tr.ondragstart = e => {
+                dragged = tr;
+                e.dataTransfer.dropEffect = "move";
+                e.dataTransfer.effectAllowed = "move";
+                e.dataTransfer.setData("text/html", tr.innerHTML);
+            };
+
+            tr.ondragover = e => e.preventDefault();
+
+            tr.ondrop = e => {
+                e.preventDefault();
+                if (dragged != tr) {
+                    dragged.innerHTML = tr.innerHTML;
+                    tr.innerHTML = e.dataTransfer.getData("text/html");
+                }
+
+                //everytime this runs go through every row and update their orderNumber
+                $.each($imageTable.children(), function(key, row) {
+                    console.log(row.cells[0].id.split('-')[1]);
+                    $.post(PG_AJAX_URL, {
+                        action: 'pg_image',
+                        data: {
+                            postId: row.cells[0].id.split('-')[1],
+                            orderNumber: parseInt(key + 1)
+                        }
+                    }, function(response){
+                        if (response.status === 'success') {
+                            /*toastr.success(response.message);*/
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    });
+                });
+            };
+
+            tr.ondragenter = () => tr.classList.add("hover");
+            tr.ondragleave = () => tr.classList.remove("hover");
+            tr.ondragend = () => {
+                for (let r of all) { r.classList.remove("hover"); }
+            };
+        }
+    }
+
+    const openMediaUploader = function () {
+        'use strict';
         var uploader = wp.media.frames.file_frame = wp.media({
             frame: 'post',
             state: 'insert',

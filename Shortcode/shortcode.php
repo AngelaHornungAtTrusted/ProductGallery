@@ -26,7 +26,6 @@
 
     .imageContainer:hover .image {
         opacity: 0.3;
-        padding-left: 10%;
     }
 
     .imageContainer:hover .middle {
@@ -41,7 +40,9 @@
         border-radius: 5px;
     }
 </style>
-<h3>Featured Items</h3>
+<div class="row" id="featuredImageTable" style="align-content: center;">
+
+</div>
 <div class="row" id="imageTable" style="align-content: center;">
 
 </div>
