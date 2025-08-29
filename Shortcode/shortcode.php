@@ -3,7 +3,6 @@
 ?>
 <script>
     PG_AJAX_URL = '<?php echo esc_url(admin_url('admin-ajax.php', 'relative')); ?>';
-    FEATURED = '<?php echo $featured; ?>';
 </script>
 <style>
     .image {
