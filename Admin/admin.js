@@ -2,6 +2,10 @@
     let $uploadButton, $imageTableHead, $imageTable;
     let width, options = [], mobile;
 
+    /**
+     * TODO fix bug where after ordering the updating of descriptoins doesn't work
+     */
+
     const pageInit = function() {
         $uploadButton = $('#imageUpload');
         $imageTableHead = $('#imageTableHead');
@@ -129,7 +133,6 @@
 
                 //everytime this runs go through every row and update their orderNumber
                 $.each($imageTable.children(), function(key, row) {
-                    console.log(row.cells[0].id.split('-')[1]);
                     $.post(PG_AJAX_URL, {
                         action: 'pg_image',
                         data: {
@@ -166,7 +169,6 @@
             var selections = uploader.state().get('selection').toJSON();
 
             $.each(selections, function(key, selection){
-                console.log(selection.description);
                 $.post(PG_AJAX_URL, {
                     action: 'pg_image',
                     data: {
