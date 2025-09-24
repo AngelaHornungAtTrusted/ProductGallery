@@ -1,0 +1,17 @@
+{
+  "name": "angela/product-gallery",
+  "description": "Product Gallery for Wordpress",
+  "autoload": {
+    "psr-4": {
+      "Util\\": "Util/"
+    }
+  },
+  "license": "CC-BY-3.0-US",
+  "authors": [
+    {
+      "name": "angela",
+      "email": "angela@trustedtechsupport.com"
+    }
+  ],
+  "require": {}
+}
