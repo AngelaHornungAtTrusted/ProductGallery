@@ -27,7 +27,7 @@
             if (mobile !== true){
 
                 $('#' + ((image.featured === '1') ? 'featuredImageTable' : 'imageTable')).append('<div class="imageContainer col-md-2">' +
-                    '<img src="' + image.path + '" class="image" alt="' + image.alt + '" style="height: 200px; overflow: hidden;">' +
+                    '<img src="' + image.path + '" class="image" alt="' + image.alt + '" style="height: 250px; width: 100%; overflow: hidden;">' +
                     '<div class="middle">' +
                     '<div class="text">' + image.description + '</div> ' +
                     '</div> ' +

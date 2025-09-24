@@ -2,10 +2,6 @@
     let $uploadButton, $imageTableHead, $imageTable;
     let width, options = [], mobile;
 
-    /**
-     * TODO fix bug where after ordering the updating of descriptoins doesn't work
-     */
-
     const pageInit = function() {
         $uploadButton = $('#imageUpload');
         $imageTableHead = $('#imageTableHead');
@@ -57,7 +53,7 @@
     }
 
     const setActions = function () {
-        $('.btn-danger').on('click', function(e) {
+        $('btn-danger').off('click').on('click', function(e) {
             $.post(PG_AJAX_URL, {
                 action: 'pg_image',
                 data: {
@@ -72,7 +68,7 @@
             })
         });
 
-        $('.imageDescription').on('change', function(e) {
+        $('.imageDescription').off('change').on('change', function(e) {
             $.post(PG_AJAX_URL, {
                 action: 'pg_image',
                 data: {
@@ -88,7 +84,8 @@
             })
         });
 
-        $('.imageFeatured').on('click', function(e) {
+        $('.imageFeatured').off('click').on('click', function(e) {
+            console.log('featured');
             $.post(PG_AJAX_URL, {
                 action: 'pg_image',
                 data: {
@@ -142,6 +139,7 @@
                     }, function(response){
                         if (response.status === 'success') {
                             /*toastr.success(response.message);*/
+                            setActions();
                         } else {
                             toastr.error(response.message);
                         }

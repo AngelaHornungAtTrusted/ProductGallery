@@ -1,15 +1,15 @@
 <?php
 /*
- * Plugin Name: ProductGallery
- * Description: Product Gallery
+ * Plugin Name: Product Gallery
+ * Description: a simple product gallery
  * Version: 1.0
- * Requires at least: 5.2
- * Requires PHP: 8.0.0
+ * Requires at least: 6.0.0
+ * Requires PHP: 7.0
  * Author: Angela Hornung
  * Prefix: pg
+ * License: GPLv2 or later
  */
 
-//load classes & configs
 //load classes & configs
 require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ProductGalleryConfig.php');
 require_once(PG_ROOT_DIR_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
@@ -20,7 +20,6 @@ use Util\PgDbTableManager;
 
 /* Plugin Activation & Installation Management Hooks */
 register_activation_hook(__FILE__, 'pg_activate');
-add_action('admin_enqueue_scripts', 'pg_enqueue_admin_scripts');
 
 /* Actions */
 add_action('admin_menu', 'pg_admin_menu');
@@ -40,10 +39,6 @@ function pg_activate(): void
     $dbTableManager->initTables();
 }
 
-function pg_enqueue_admin_scripts(): void {
-    wp_enqueue_script('fontawesome', 'https://kit.fontawesome.com/9548fb5f16.js');
-}
-
 function pg_admin_menu(): void
 {
     add_menu_page(
@@ -59,6 +54,7 @@ function pg_admin_page_content(): void
 {
     ?>
     <div class="wrap">
+        <?php wp_enqueue_script('fontawesome', PG_ASSETS_URL . '/fontawesome/fontawesome.min.js'); ?>
         <?php wp_enqueue_style('bootstrap-css', PG_ASSETS_URL . '/bootstrap/css/bootstrap.css'); ?>
         <?php wp_enqueue_script('bootstrap-js', PG_ASSETS_URL . '/bootstrap/js/bootstrap.js'); ?>
         <?php wp_enqueue_style('toastr', plugin_dir_url(__FILE__) . 'Assets/toastr/build/toastr.css'); ?>

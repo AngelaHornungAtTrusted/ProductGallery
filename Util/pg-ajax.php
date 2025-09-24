@@ -32,7 +32,7 @@ function wp_ajax_pg_image() {
                         'alt' => sanitize_text_field($_POST['data']['alt']),
                         'path' => sanitize_text_field($_POST['data']['path']),
                         'description' => sanitize_text_field($_POST['data']['description']),
-                        'create_date' => date('Y-m-d H:i:s'),
+                        'create_date' => gmdate('Y-m-d H:i:s'),
                         'update_date' => gmdate('Y-m-d H:i:s'),
                     )
                 );
@@ -79,6 +79,7 @@ function wp_ajax_pg_image() {
         if (!isset($_GET['data']['imageId'])) {
             //grab all
             try {
+                //prepare not needed as there are no variables to sanitize
                 $data = $wpdb->get_results("SELECT * FROM " . PG_TABLE_IMAGES . " ORDER BY orderNumber ASC");
             } catch (Exception $e) {
                 $response->status = 'error';
@@ -92,7 +93,7 @@ function wp_ajax_pg_image() {
         } else {
             //grab specific
             try{
-                $data = $wpdb->get_results("SELECT * FROM " . PG_TABLE_IMAGES . " WHERE id = " . intval($_GET['data']['imageId']));
+                $data = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . PG_TABLE_IMAGES . " WHERE id = %d", array(intval($_GET['data']['imageId']))));
             }catch(Exception $e){
                 $response->status = 'error';
                 $response->message = $e->getMessage();
