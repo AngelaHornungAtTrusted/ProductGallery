@@ -1,16 +1,15 @@
 (function($) {
-    let $featuredImageTable, $imageTable;
+    let $featuredImageTable;
     let mobile;
     const pageInit = function() {
         $featuredImageTable = $('#featuredImageTable');
-        $imageTable = $('#imageTable');
 
         grabImages();
     }
 
     const grabImages = function() {
         $.get(PG_AJAX_URL, {
-            action: 'pg_shortcode_image',
+            action: 'pg_get_featured',
         }, function(response) {
             if (response.status === 'success') {
                 buildTable(response.data);
@@ -25,15 +24,14 @@
 
         $.each(data, function(key, image) {
             if (mobile !== true){
-
-                $('#' + ((image.featured === '1') ? 'featuredImageTable' : 'imageTable')).append('<div class="imageContainer col-md-2">' +
+                $featuredImageTable.append('<div class="imageContainer col-md-2">' +
                     '<img src="' + image.path + '" class="image" alt="' + image.alt + '" style="height: 250px; width: 100%; overflow: hidden;">' +
                     '<div class="middle">' +
                     '<div class="text">' + image.description + '</div> ' +
                     '</div> ' +
                     '</div>');
             } else {
-                $('#' + ((image.featured === '1') ? 'featuredImageTable' : 'imageTable')).append('<div class="imageContainer">' +
+                $featuredImageTable.append('<div class="imageContainer">' +
                     '<img src="' + image.path + '" class="image" alt="' + image.alt + '" style="min-width:' + ($(window).width()/1.3) + 'px")>' +
                     '<div class="middle" style="min-width:' + ($(window).width()/1.3) + 'px")>' +
                     '<div class="text">' + image.description + '</div> ' +

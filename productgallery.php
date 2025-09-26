@@ -28,8 +28,10 @@ add_action('admin_menu', 'pg_admin_menu');
 add_action('wp_ajax_pg_image', 'wp_ajax_pg_image');
 
 /* Shortcode Actions */
-add_action('wp_ajax_pg_shortcode_image', 'wp_ajax_pg_shortcode_image');
-add_action('wp_ajax_nopriv_pg_shortcode_image', 'wp_ajax_pg_shortcode_image');
+add_action('wp_ajax_pg_get_unfeatured', 'wp_ajax_pg_get_unfeatured');
+add_action('wp_ajax_nopriv_pg_get_unfeatured', 'wp_ajax_pg_get_unfeatured');
+add_action('wp_ajax_pg_get_featured', 'wp_ajax_pg_get_featured');
+add_action('wp_ajax_nopriv_pg_get_featured', 'wp_ajax_pg_get_featured');
 
 function pg_activate(): void
 {
@@ -66,17 +68,30 @@ function pg_admin_page_content(): void
 }
 
 /* Shortcode */
-add_shortcode('pgallery', 'pg_shortcode');
+add_shortcode('dgallery', 'pg_unfeatured_gallery');
+add_shortcode('fgallery', 'pg_featured_gallery');
 
-function pg_shortcode($atts = [], $content = null): void
+function pg_unfeatured_gallery(): void
 {
     ?>
         <div class="wrap">
             <?php wp_enqueue_style('bootstrap-css', PG_ASSETS_URL . '/bootstrap/css/bootstrap.css'); ?>
             <?php wp_enqueue_script('bootstrap-js', PG_ASSETS_URL . '/bootstrap/js/bootstrap.js'); ?>
             <?php wp_enqueue_script('popup', plugin_dir_url(__FILE__) . 'Assets/popup/popup.js', array('jquery')); ?>
-            <?php include(plugin_dir_path(__FILE__) . 'Shortcode/shortcode.php'); ?>
-            <?php wp_enqueue_script('admin-js', PG_SHORTCODE_URL . '/shortcode.js"', array('jquery')); ?>
+            <?php include(plugin_dir_path(__FILE__) . 'Shortcode/unfeatured/unfeatured.php'); ?>
+            <?php wp_enqueue_script('unfeatured-js', PG_SHORTCODE_URL . '/unfeatured/unfeatured.js"', array('jquery')); ?>
         </div>
         <?php
+}
+
+function pg_featured_gallery(): void {
+    ?>
+    <div class="wrap">
+        <?php wp_enqueue_style('bootstrap-css', PG_ASSETS_URL . '/bootstrap/css/bootstrap.css'); ?>
+        <?php wp_enqueue_script('bootstrap-js', PG_ASSETS_URL . '/bootstrap/js/bootstrap.js'); ?>
+        <?php wp_enqueue_script('popup', plugin_dir_url(__FILE__) . 'Assets/popup/popup.js', array('jquery')); ?>
+        <?php include(plugin_dir_path(__FILE__) . 'Shortcode/featured/featured.php'); ?>
+        <?php wp_enqueue_script('featured-js', PG_SHORTCODE_URL . '/featured/featured.js"', array('jquery')); ?>
+    </div>
+<?php
 }

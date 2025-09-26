@@ -42,6 +42,3 @@
 <div class="row" id="featuredImageTable" style="align-content: center;">
 
 </div>
-<div class="row" id="imageTable" style="align-content: center;">
-
-</div>

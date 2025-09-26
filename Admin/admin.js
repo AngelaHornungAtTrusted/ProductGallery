@@ -53,7 +53,8 @@
     }
 
     const setActions = function () {
-        $('btn-danger').off('click').on('click', function(e) {
+        $('.btn-danger').off('click').on('click', function(e) {
+            console.log('delete image');
             $.post(PG_AJAX_URL, {
                 action: 'pg_image',
                 data: {
